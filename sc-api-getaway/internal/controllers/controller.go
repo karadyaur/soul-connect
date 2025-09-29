@@ -14,5 +14,6 @@ func NewController(authClient generated.AuthServiceClient, postClient postpb.Pos
 	return &Controller{
 		AuthController: NewAuthController(authClient),
 		PostController: NewPostController(postClient),
+
 	}
 }

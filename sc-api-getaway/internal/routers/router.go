@@ -39,6 +39,7 @@ func NewRouter(config *config.Config, controller *controllers.Controller) *Route
 		config:     config,
 		authRouter: newAuthRouter(controller.AuthController, config),
 		postRouter: newPostRouter(controller.PostController),
+
 	}
 }
 
@@ -47,6 +48,7 @@ func (r *Router) SetRoutes() {
 
 	r.authRouter.setAuthRoutes(api)
 	r.postRouter.setPostRoutes(api)
+
 
 	if r.config.EnvType != "prod" {
 		// r.devRouter.setDevRoutes(api)

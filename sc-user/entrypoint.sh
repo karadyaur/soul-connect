@@ -1,10 +1,17 @@
 #!/bin/sh
+set -eu
 
-go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-migrate create -ext sql -dir internal/db/migration -seq init_schema
+MIGRATIONS_DIR=${MIGRATIONS_DIR:-/app/internal/db/migration}
+APP_BINARY=${APP_BINARY:-/usr/local/bin/general}
+MIGRATE_BIN=${MIGRATE_BIN:-/usr/local/bin/migrate}
 
-# Perform migrations
-migrate -path internal/db/migration -database "postgresql://root:secret@postgres-auth:5432/sc_db?sslmode=disable" -verbose up
+if [ -z "${DB_SOURCE:-}" ]; then
+  echo "DB_SOURCE environment variable is required" >&2
+  exit 1
+fi
 
-# Start the server
-./main
+# Run database migrations
+"${MIGRATE_BIN}" -path "${MIGRATIONS_DIR}" -database "${DB_SOURCE}" -verbose up
+
+# Start the service
+exec "${APP_BINARY}"

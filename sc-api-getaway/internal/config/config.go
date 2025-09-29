@@ -7,11 +7,12 @@ import (
 )
 
 type Config struct {
-	EnvType       string `mapstructure:"ENV_TYPE"`
-	ServerPort    string `mapstructure:"SERVER_PORT"`
-	DBSource      string `mapstructure:"DB_SOURCE"`
-	GrpcAuthPort  string `mapstructure:"GPRC_AUTH_PORT"`
-	WebappBaseUrl string `mapstructure:"WEBAPP_BASE_URL"`
+        EnvType       string `mapstructure:"ENV_TYPE"`
+        ServerPort    string `mapstructure:"SERVER_PORT"`
+        DBSource      string `mapstructure:"DB_SOURCE"`
+        GrpcAuthPort  string `mapstructure:"GPRC_AUTH_PORT"`
+        GrpcPostPort  string `mapstructure:"GRPC_POST_PORT"`
+        WebappBaseUrl string `mapstructure:"WEBAPP_BASE_URL"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

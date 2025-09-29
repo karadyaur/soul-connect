@@ -15,23 +15,35 @@ services:
     networks:
       - backend
 
-  sc-api-getaway:
-    build: ./sc-api-getaway
-    container_name: api-gateway
+  sc-auth:
+    build:
+      context: .
+      dockerfile: sc-auth/Dockerfile
+    container_name: sc-auth
     depends_on:
       - postgres
     environment:
-      - DATABASE_URL=postgresql://root:secret@localhost:5433/sc_db?sslmode=disable
+      SERVER_PORT: "50051"
+      DB_SOURCE: postgresql://root:secret@postgres:5432/sc_db?sslmode=disable
     ports:
-      - "8000:8000"
+      - "50051:50051"
     networks:
       - backend
 
-  nginx:
-    build: ./sc-api-getaway
-    container_name: nginx
+  sc-api-getaway:
+    build:
+      context: .
+      dockerfile: sc-api-getaway/Dockerfile
+    container_name: api-gateway
+    depends_on:
+      - postgres
+      - sc-auth
+    environment:
+      SERVER_PORT: "8000"
+      DB_SOURCE: postgresql://root:secret@postgres:5432/sc_db?sslmode=disable
+      GRPC_AUTH_PORT: sc-auth:50051
     ports:
-      - "80:80"
+      - "8000:8000"
     networks:
       - backend
 

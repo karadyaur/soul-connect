@@ -1,10 +1,9 @@
-#!/bin/sh
+#!/busybox/sh
+set -euo pipefail
 
-go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-migrate create -ext sql -dir internal/db/migration -seq init_schema
+MIGRATION_DIR="${MIGRATION_DIR:-/app/internal/db/migration}"
+DB_SOURCE="${DB_SOURCE:?DB_SOURCE environment variable is required}"
 
-# Perform migrations
-migrate -path internal/db/migration -database "postgresql://root:secret@postgres-auth:5432/sc_db?sslmode=disable" -verbose up
+/bin/migrate -path "${MIGRATION_DIR}" -database "${DB_SOURCE}" up
 
-# Start the server
-./main
+exec /app/auth-service

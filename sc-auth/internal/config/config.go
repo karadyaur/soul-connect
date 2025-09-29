@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"log"
 
 	"github.com/spf13/viper"
@@ -19,8 +20,11 @@ func LoadConfig(path string) (config Config, err error) {
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		log.Fatalf("could not loadconfig: %v", err)
-		return
+		var configErr viper.ConfigFileNotFoundError
+		if !errors.As(err, &configErr) {
+			log.Fatalf("could not loadconfig: %v", err)
+			return
+		}
 	}
 
 	err = viper.Unmarshal(&config)

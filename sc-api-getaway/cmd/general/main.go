@@ -24,7 +24,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	conn, err := grpc.NewClient("localhost"+":"+newConfig.GrpcAuthPort, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(newConfig.GrpcAuthTarget, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to Auth Service: %v", err)
 	}

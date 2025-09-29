@@ -1,7 +1,7 @@
 -- name: CreatePost :one
-INSERT INTO posts (title, description)
-VALUES (@title, @description)
-RETURNING user_id, title, description, likes_count, created_at, updated_at;
+INSERT INTO posts (user_id, title, description)
+VALUES (@user_id, @title, @description)
+RETURNING id, user_id, title, description, likes_count, created_at, updated_at;
 
 -- name: GetPostByID :one
 SELECT id, user_id, title, description, likes_count, created_at, updated_at
@@ -23,6 +23,7 @@ WHERE id = @id;
 -- name: GetPostsWithCommentsAndLikes :many
 SELECT
     p.id AS post_id,
+    p.user_id AS post_user_id,
     p.title AS post_title,
     p.description AS post_description,
     p.likes_count AS post_likes,

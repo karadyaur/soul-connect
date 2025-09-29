@@ -11,6 +11,9 @@ type Config struct {
 	ServerPort    string `mapstructure:"SERVER_PORT"`
 	WebappBaseUrl string `mapstructure:"WEBAPP_BASE_URL"`
 	DBSource      string `mapstructure:"DB_SOURCE"`
+	KafkaBrokers  string `mapstructure:"KAFKA_BROKERS"`
+	KafkaTopic    string `mapstructure:"KAFKA_NOTIFICATIONS_TOPIC"`
+	KafkaGroupID  string `mapstructure:"KAFKA_GROUP_ID"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

@@ -80,32 +80,24 @@ func (q *Queries) GetLabelsForPost(ctx context.Context, postID pgtype.UUID) ([]L
 }
 
 const getPostsByLabel = `-- name: GetPostsByLabel :many
-SELECT p.id, p.title, p.description, p.likes_count, p.created_at, p.updated_at
+SELECT p.id, p.user_id, p.title, p.description, p.likes_count, p.created_at, p.updated_at
 FROM posts p
     JOIN labels_posts lp ON p.id = lp.post_id
 WHERE lp.label_id = $1
 `
 
-type GetPostsByLabelRow struct {
-	ID          pgtype.UUID      `json:"id"`
-	Title       string           `json:"title"`
-	Description pgtype.Text      `json:"description"`
-	LikesCount  pgtype.Int4      `json:"likes_count"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-}
-
-func (q *Queries) GetPostsByLabel(ctx context.Context, labelID pgtype.UUID) ([]GetPostsByLabelRow, error) {
+func (q *Queries) GetPostsByLabel(ctx context.Context, labelID pgtype.UUID) ([]Post, error) {
 	rows, err := q.db.Query(ctx, getPostsByLabel, labelID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetPostsByLabelRow{}
+	items := []Post{}
 	for rows.Next() {
-		var i GetPostsByLabelRow
+		var i Post
 		if err := rows.Scan(
 			&i.ID,
+			&i.UserID,
 			&i.Title,
 			&i.Description,
 			&i.LikesCount,

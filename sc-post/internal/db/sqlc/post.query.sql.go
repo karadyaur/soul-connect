@@ -12,29 +12,22 @@ import (
 )
 
 const createPost = `-- name: CreatePost :one
-INSERT INTO posts (title, description)
-VALUES ($1, $2)
-RETURNING user_id, title, description, likes_count, created_at, updated_at
+INSERT INTO posts (user_id, title, description)
+VALUES ($1, $2, $3)
+RETURNING id, user_id, title, description, likes_count, created_at, updated_at
 `
 
 type CreatePostParams struct {
+	UserID      pgtype.UUID `json:"user_id"`
 	Title       string      `json:"title"`
 	Description pgtype.Text `json:"description"`
 }
 
-type CreatePostRow struct {
-	UserID      pgtype.UUID      `json:"user_id"`
-	Title       string           `json:"title"`
-	Description pgtype.Text      `json:"description"`
-	LikesCount  pgtype.Int4      `json:"likes_count"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-}
-
-func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error) {
-	row := q.db.QueryRow(ctx, createPost, arg.Title, arg.Description)
-	var i CreatePostRow
+func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (Post, error) {
+	row := q.db.QueryRow(ctx, createPost, arg.UserID, arg.Title, arg.Description)
+	var i Post
 	err := row.Scan(
+		&i.ID,
 		&i.UserID,
 		&i.Title,
 		&i.Description,
@@ -80,6 +73,7 @@ func (q *Queries) GetPostByID(ctx context.Context, id pgtype.UUID) (Post, error)
 const getPostsWithCommentsAndLikes = `-- name: GetPostsWithCommentsAndLikes :many
 SELECT
     p.id AS post_id,
+    p.user_id AS post_user_id,
     p.title AS post_title,
     p.description AS post_description,
     p.likes_count AS post_likes,
@@ -94,6 +88,7 @@ ORDER BY p.created_at DESC
 
 type GetPostsWithCommentsAndLikesRow struct {
 	PostID          pgtype.UUID `json:"post_id"`
+	PostUserID      pgtype.UUID `json:"post_user_id"`
 	PostTitle       string      `json:"post_title"`
 	PostDescription pgtype.Text `json:"post_description"`
 	PostLikes       pgtype.Int4 `json:"post_likes"`
@@ -112,6 +107,7 @@ func (q *Queries) GetPostsWithCommentsAndLikes(ctx context.Context) ([]GetPostsW
 		var i GetPostsWithCommentsAndLikesRow
 		if err := rows.Scan(
 			&i.PostID,
+			&i.PostUserID,
 			&i.PostTitle,
 			&i.PostDescription,
 			&i.PostLikes,

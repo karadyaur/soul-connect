@@ -11,6 +11,7 @@ type Config struct {
 	ServerPort    string `mapstructure:"SERVER_PORT"`
 	DBSource      string `mapstructure:"DB_SOURCE"`
 	GrpcAuthPort  string `mapstructure:"GPRC_AUTH_PORT"`
+	GrpcUserPort  string `mapstructure:"GPRC_USER_PORT"`
 	WebappBaseUrl string `mapstructure:"WEBAPP_BASE_URL"`
 }
 

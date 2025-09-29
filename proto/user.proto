@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./generated";
+
+service UserService {
+  rpc CreateProfile(CreateProfileRequest) returns (UserProfile);
+  rpc GetProfile(GetProfileRequest) returns (UserProfile);
+  rpc UpdateProfile(UpdateProfileRequest) returns (UserProfile);
+  rpc DeleteProfile(DeleteProfileRequest) returns (Empty);
+  rpc Subscribe(ModifySubscriptionRequest) returns (Empty);
+  rpc Unsubscribe(ModifySubscriptionRequest) returns (Empty);
+  rpc ListSubscriptions(ListSubscriptionsRequest) returns (ListSubscriptionsResponse);
+}
+
+message Empty {}
+
+message CreateProfileRequest {
+  string auth_id = 1;
+  string full_name = 2;
+  optional string bio = 3;
+  optional string photo_link = 4;
+}
+
+message GetProfileRequest {
+  string id = 1;
+}
+
+message UpdateProfileRequest {
+  string id = 1;
+  optional string full_name = 2;
+  optional string bio = 3;
+  optional string photo_link = 4;
+}
+
+message DeleteProfileRequest {
+  string id = 1;
+}
+
+message ModifySubscriptionRequest {
+  string subscriber_id = 1;
+  string author_id = 2;
+}
+
+message ListSubscriptionsRequest {
+  string subscriber_id = 1;
+}
+
+message ListSubscriptionsResponse {
+  string subscriber_id = 1;
+  repeated string author_ids = 2;
+}
+
+message UserProfile {
+  string id = 1;
+  string auth_id = 2;
+  string full_name = 3;
+  optional string bio = 4;
+  optional string photo_link = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}

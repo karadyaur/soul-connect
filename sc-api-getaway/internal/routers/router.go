@@ -15,6 +15,7 @@ type Router struct {
 	Gin        *gin.Engine
 	config     *config.Config
 	authRouter *authRouter
+	userRouter *userRouter
 }
 
 func NewRouter(config *config.Config, controller *controllers.Controller) *Router {
@@ -37,6 +38,7 @@ func NewRouter(config *config.Config, controller *controllers.Controller) *Route
 		Gin:        ginRouter,
 		config:     config,
 		authRouter: newAuthRouter(controller.AuthController, config),
+		userRouter: newUserRouter(controller.UserController, config),
 	}
 }
 
@@ -44,6 +46,7 @@ func (r *Router) SetRoutes() {
 	api := r.Gin.Group("/api")
 
 	r.authRouter.setAuthRoutes(api)
+	r.userRouter.setUserRoutes(api)
 
 	if r.config.EnvType != "prod" {
 		// r.devRouter.setDevRoutes(api)

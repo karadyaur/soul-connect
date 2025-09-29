@@ -24,14 +24,21 @@ func main() {
 		os.Exit(1)
 	}
 
-	conn, err := grpc.NewClient("localhost"+":"+newConfig.GrpcAuthPort, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	authConn, err := grpc.NewClient("localhost"+":"+newConfig.GrpcAuthPort, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect to Auth Service: %v", err)
 	}
-	defer conn.Close()
+	defer authConn.Close()
 
-	authServiceClient := generated.NewAuthServiceClient(conn)
-	newController := controllers.NewController(authServiceClient)
+	userConn, err := grpc.NewClient("localhost"+":"+newConfig.GrpcUserPort, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("failed to connect to User Service: %v", err)
+	}
+	defer userConn.Close()
+
+	authServiceClient := generated.NewAuthServiceClient(authConn)
+	userServiceClient := generated.NewUserServiceClient(userConn)
+	newController := controllers.NewController(authServiceClient, userServiceClient)
 
 	newRouter := routers.NewRouter(&newConfig, newController)
 	newRouter.SetRoutes()

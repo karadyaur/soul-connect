@@ -1,15 +1,19 @@
 package controllers
 
-import "soul-connect/sc-api-getaway/internal/generated"
+import (
+	"soul-connect/sc-api-getaway/internal/generated"
+	postpb "soul-connect/sc-post/pkg/postpb"
+)
 
 type Controller struct {
 	AuthController *AuthController
-	UserController *UserController
+	PostController *PostController
 }
 
-func NewController(authClient generated.AuthServiceClient, userClient generated.UserServiceClient) *Controller {
+func NewController(authClient generated.AuthServiceClient, postClient postpb.PostServiceClient) *Controller {
 	return &Controller{
 		AuthController: NewAuthController(authClient),
-		UserController: NewUserController(userClient),
+		PostController: NewPostController(postClient),
+
 	}
 }

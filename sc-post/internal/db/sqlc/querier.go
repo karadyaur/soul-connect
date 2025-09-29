@@ -15,7 +15,7 @@ type Querier interface {
 	CreateComment(ctx context.Context, arg CreateCommentParams) (Comment, error)
 	CreateLikeForComment(ctx context.Context, arg CreateLikeForCommentParams) error
 	CreateLikeForPost(ctx context.Context, arg CreateLikeForPostParams) error
-	CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error)
+	CreatePost(ctx context.Context, arg CreatePostParams) (Post, error)
 	DeleteLikeForComment(ctx context.Context, arg DeleteLikeForCommentParams) error
 	DeleteLikeForPost(ctx context.Context, arg DeleteLikeForPostParams) error
 	DeletePost(ctx context.Context, id pgtype.UUID) error
@@ -25,7 +25,7 @@ type Querier interface {
 	GetLikesCountForComment(ctx context.Context, commentID pgtype.UUID) (pgtype.Int4, error)
 	GetLikesCountForPost(ctx context.Context, postID pgtype.UUID) (pgtype.Int4, error)
 	GetPostByID(ctx context.Context, id pgtype.UUID) (Post, error)
-	GetPostsByLabel(ctx context.Context, labelID pgtype.UUID) ([]GetPostsByLabelRow, error)
+	GetPostsByLabel(ctx context.Context, labelID pgtype.UUID) ([]Post, error)
 	GetPostsWithCommentsAndLikes(ctx context.Context) ([]GetPostsWithCommentsAndLikesRow, error)
 	RemoveLabelFromPost(ctx context.Context, arg RemoveLabelFromPostParams) error
 	UpdatePost(ctx context.Context, arg UpdatePostParams) error

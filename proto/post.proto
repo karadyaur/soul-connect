@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package post;
+
+option go_package = "soul-connect/sc-post/pkg/postpb";
+
+message Empty {}
+
+message Label {
+  string id = 1;
+  string name = 2;
+}
+
+message Comment {
+  string id = 1;
+  string post_id = 2;
+  string user_id = 3;
+  string content = 4;
+  int32 likes_count = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message Post {
+  string id = 1;
+  string user_id = 2;
+  string title = 3;
+  string description = 4;
+  int32 likes_count = 5;
+  string created_at = 6;
+  string updated_at = 7;
+  repeated Label labels = 8;
+}
+
+message PostSummary {
+  Post post = 1;
+  int64 total_comments = 2;
+  int64 total_likes = 3;
+}
+
+message CreatePostRequest {
+  string user_id = 1;
+  string title = 2;
+  string description = 3;
+  repeated string label_ids = 4;
+}
+
+message CreatePostResponse {
+  Post post = 1;
+}
+
+message GetPostRequest {
+  string id = 1;
+}
+
+message GetPostResponse {
+  Post post = 1;
+  repeated Comment comments = 2;
+}
+
+message ListPostsRequest {
+  repeated string label_ids = 1;
+}
+
+message ListPostsResponse {
+  repeated PostSummary posts = 1;
+}
+
+message AddCommentRequest {
+  string post_id = 1;
+  string user_id = 2;
+  string content = 3;
+}
+
+message AddCommentResponse {
+  Comment comment = 1;
+}
+
+message ListCommentsRequest {
+  string post_id = 1;
+}
+
+message ListCommentsResponse {
+  repeated Comment comments = 1;
+}
+
+message LikePostRequest {
+  string post_id = 1;
+  string user_id = 2;
+}
+
+message LikeCommentRequest {
+  string comment_id = 1;
+  string user_id = 2;
+}
+
+message UnlikePostRequest {
+  string post_id = 1;
+  string user_id = 2;
+}
+
+message UnlikeCommentRequest {
+  string comment_id = 1;
+  string user_id = 2;
+}
+
+message LikeCountResponse {
+  int32 likes_count = 1;
+}
+
+message ListLabelsResponse {
+  repeated Label labels = 1;
+}
+
+message UpdatePostRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+}
+
+service PostService {
+  rpc CreatePost(CreatePostRequest) returns (CreatePostResponse);
+  rpc GetPost(GetPostRequest) returns (GetPostResponse);
+  rpc ListPosts(ListPostsRequest) returns (ListPostsResponse);
+  rpc AddComment(AddCommentRequest) returns (AddCommentResponse);
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
+  rpc LikePost(LikePostRequest) returns (LikeCountResponse);
+  rpc UnlikePost(UnlikePostRequest) returns (LikeCountResponse);
+  rpc LikeComment(LikeCommentRequest) returns (LikeCountResponse);
+  rpc UnlikeComment(UnlikeCommentRequest) returns (LikeCountResponse);
+  rpc ListLabels(Empty) returns (ListLabelsResponse);
+  rpc AddLabelToPost(AddLabelToPostRequest) returns (Empty);
+  rpc RemoveLabelFromPost(RemoveLabelFromPostRequest) returns (Empty);
+  rpc UpdatePost(UpdatePostRequest) returns (Post);
+  rpc DeletePost(GetPostRequest) returns (Empty);
+}
+
+message AddLabelToPostRequest {
+  string post_id = 1;
+  string label_id = 2;
+}
+
+message RemoveLabelFromPostRequest {
+  string post_id = 1;
+  string label_id = 2;
+}

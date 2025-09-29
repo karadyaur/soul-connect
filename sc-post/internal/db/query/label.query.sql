@@ -18,7 +18,7 @@ SELECT id, name
 FROM labels;
 
 -- name: GetPostsByLabel :many
-SELECT p.id, p.title, p.description, p.likes_count, p.created_at, p.updated_at
+SELECT p.id, p.user_id, p.title, p.description, p.likes_count, p.created_at, p.updated_at
 FROM posts p
     JOIN labels_posts lp ON p.id = lp.post_id
 WHERE lp.label_id = @label_id;

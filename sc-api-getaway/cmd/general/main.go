@@ -3,18 +3,20 @@ package main
 import (
 	"context"
 	"fmt"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
+	"time"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"soul-connect/sc-api-getaway/internal/config"
 	"soul-connect/sc-api-getaway/internal/controllers"
 	"soul-connect/sc-api-getaway/internal/generated"
 	"soul-connect/sc-api-getaway/internal/routers"
-	"syscall"
-	"time"
+	postpb "soul-connect/sc-post/pkg/postpb"
 )
 
 func main() {
@@ -30,15 +32,15 @@ func main() {
 	}
 	defer authConn.Close()
 
-	userConn, err := grpc.NewClient("localhost"+":"+newConfig.GrpcUserPort, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	postConn, err := grpc.NewClient("localhost"+":"+newConfig.GrpcPostPort, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("failed to connect to User Service: %v", err)
+		log.Fatalf("failed to connect to Post Service: %v", err)
 	}
-	defer userConn.Close()
+	defer postConn.Close()
 
-	authServiceClient := generated.NewAuthServiceClient(authConn)
-	userServiceClient := generated.NewUserServiceClient(userConn)
-	newController := controllers.NewController(authServiceClient, userServiceClient)
+	authServiceClient := generated.NewAuthServiceClient(conn)
+	postServiceClient := postpb.NewPostServiceClient(postConn)
+	newController := controllers.NewController(authServiceClient, postServiceClient)
 
 	newRouter := routers.NewRouter(&newConfig, newController)
 	newRouter.SetRoutes()

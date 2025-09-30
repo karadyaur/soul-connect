@@ -65,6 +65,9 @@ Temporary Items
 *.env
 .env*
 
+# Allow checked-in environment templates
+!**/example.env
+
 .idea
 
 # dependencies

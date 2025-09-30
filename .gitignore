@@ -65,6 +65,9 @@ Temporary Items
 *.env
 .env*
 
+# Allow environment templates to be committed
+!**/example.env
+
 .idea
 
 # dependencies

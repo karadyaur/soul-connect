@@ -1,4 +1,4 @@
--- name: CreateSubscription :exec
+-- name: CreateSubscription :one
 INSERT INTO subscriptions (subscriber_id, author_id)
 VALUES (@subscriber_id, @author_id)
 RETURNING id, subscriber_id, author_id, created_at;

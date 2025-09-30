@@ -30,10 +30,11 @@ func (r *SubscriptionRepository) Subscribe(ctx context.Context, subscriberID, au
 		return err
 	}
 
-	return r.queries.CreateSubscription(ctx, db.CreateSubscriptionParams{
+	_, err = r.queries.CreateSubscription(ctx, db.CreateSubscriptionParams{
 		SubscriberID: subscriber,
 		AuthorID:     author,
 	})
+	return err
 }
 
 func (r *SubscriptionRepository) Unsubscribe(ctx context.Context, subscriberID, authorID string) error {
